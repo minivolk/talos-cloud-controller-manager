@@ -43,6 +43,28 @@ metadata:
 data:
   ccm-config.yaml: |
     global:
+      PreferIPv6: false
+    transformations:
+      - name: payload-nodes
+        nodeSelector:
+          - matchExpressions:
+              - key: talos.dev/dedicated
+                operator: In
+                values:
+                  - payload
+        labels:
+          node-role.kubernetes.io/worker: ""
+          node-role.kubernetes.io/payload: ""
+      - name: infra-nodes
+        nodeSelector:
+          - matchExpressions:
+              - key: talos.dev/dedicated
+                operator: In
+                values:
+                  - infra
+        labels:
+          node-role.kubernetes.io/worker: ""
+          node-role.kubernetes.io/infra: ""
 ---
 # Source: talos-cloud-controller-manager/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
