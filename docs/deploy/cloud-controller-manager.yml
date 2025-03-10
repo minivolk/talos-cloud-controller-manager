@@ -45,16 +45,15 @@ data:
     global:
       PreferIPv6: false
     transformations:
-      - name: payload-nodes
+      - name: worker-nodes
         nodeSelector:
           - matchExpressions:
               - key: talos.dev/dedicated
                 operator: In
                 values:
-                  - payload
+                  - worker
         labels:
           node-role.kubernetes.io/worker: ""
-          node-role.kubernetes.io/payload: ""
       - name: infra-nodes
         nodeSelector:
           - matchExpressions:
