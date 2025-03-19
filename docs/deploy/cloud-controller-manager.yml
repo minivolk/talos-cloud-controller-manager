@@ -244,7 +244,7 @@ spec:
           imagePullPolicy: IfNotPresent
           command: ["/talos-cloud-controller-manager"]
           args:
-            - --v=2
+            - --v=5
             - --cloud-provider=talos
             - --cloud-config=/etc/talos/ccm-config.yaml
             - --controllers=cloud-node,node-csr-approval,node-ipam-controller
