@@ -48,13 +48,31 @@ data:
     - name: infra-nodes
       nodeSelector:
         - matchExpressions:
-          # And condition for matchExpressions
           - key: platform
             operator: In
             values:
               - metal
-    labels:
-      node-role.kubernetes.io/worker: ""
+          - key: hostname
+            operator: Regexp
+            values:
+              - ^infra-.*$
+      labels:
+        node-role.kubernetes.io/worker: ""
+      taints:
+        talos.dev/dedicated: "infra:NoSchedule"
+    - name: worker-nodes
+      nodeSelector:
+        - matchExpressions:
+          - key: platform
+            operator: In
+            values:
+              - metal
+          - key: hostname
+            operator: Regexp
+            values:
+              - ^worker-.*$
+      labels:
+        node-role.kubernetes.io/worker: ""
 ---
 # Source: talos-cloud-controller-manager/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
