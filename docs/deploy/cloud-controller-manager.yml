@@ -60,6 +60,8 @@ data:
         node-role.kubernetes.io/worker: ""
       taints:
         talos.dev/dedicated: "infra:NoSchedule"
+      platformMetadata: &platformMetadata
+        hostname: "{{ .Hostname }}"
     - name: worker-nodes
       nodeSelector:
         - matchExpressions:
@@ -73,6 +75,7 @@ data:
               - ^worker-.*$
       labels:
         node-role.kubernetes.io/worker: ""
+      platformMetadata: *platformMetadata
 ---
 # Source: talos-cloud-controller-manager/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
