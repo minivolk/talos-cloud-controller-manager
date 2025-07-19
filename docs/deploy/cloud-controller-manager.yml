@@ -46,16 +46,17 @@ data:
       PreferIPv6: false
     transformations:
     - name: infra-nodes
-      # Match nodes by nodeSelector
       nodeSelector:
         - matchExpressions:
             - key: talos.dev/dedicated
               operator: In
               values:
                 - infra
-    # Set labels for matched nodes
     labels:
       node-role.kubernetes.io/worker: ""
+      node-role.kubernetes.io/infra: ""
+    platformMetadata:
+      test: test
 ---
 # Source: talos-cloud-controller-manager/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -236,7 +237,7 @@ spec:
           imagePullPolicy: IfNotPresent
           command: ["/talos-cloud-controller-manager"]
           args:
-            - --v=2
+            - --v=3
             - --cloud-provider=talos
             - --cloud-config=/etc/talos/ccm-config.yaml
             - --controllers=cloud-node,node-csr-approval
