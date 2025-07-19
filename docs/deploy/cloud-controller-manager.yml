@@ -247,7 +247,7 @@ spec:
             - --v=5
             - --cloud-provider=talos
             - --cloud-config=/etc/talos/ccm-config.yaml
-            - --controllers=cloud-node,node-csr-approval,node-ipam-controller
+            - --controllers=*
             - --leader-elect-resource-name=cloud-controller-manager-talos
             - --use-service-account-credentials
             - --secure-port=50258
