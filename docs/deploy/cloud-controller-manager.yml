@@ -45,13 +45,18 @@ data:
     global:
       PreferIPv6: false
     transformations:
-    - name: infra-nodes
+    - name: all-nodes
       nodeSelector:
         - matchExpressions:
           - key: platform
             operator: In
             values:
               - metal
+      platformMetadata:
+        hostname: "{{ .Hostname }}"
+    - name: infra-nodes
+      nodeSelector:
+        - matchExpressions:
           - key: hostname
             operator: Regexp
             values:
@@ -60,22 +65,15 @@ data:
         node-role.kubernetes.io/worker: ""
       taints:
         talos.dev/dedicated: "infra:NoSchedule"
-      platformMetadata: &platformMetadata
-        hostname: "{{ .Hostname }}"
     - name: worker-nodes
       nodeSelector:
         - matchExpressions:
-          - key: platform
-            operator: In
-            values:
-              - metal
           - key: hostname
             operator: Regexp
             values:
               - ^worker-.*$
       labels:
         node-role.kubernetes.io/worker: ""
-      platformMetadata: *platformMetadata
 ---
 # Source: talos-cloud-controller-manager/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
