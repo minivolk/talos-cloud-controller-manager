@@ -5,10 +5,10 @@ kind: ServiceAccount
 metadata:
   name: talos-cloud-controller-manager
   labels:
-    helm.sh/chart: talos-cloud-controller-manager-0.4.3
+    helm.sh/chart: talos-cloud-controller-manager-0.4.7
     app.kubernetes.io/name: talos-cloud-controller-manager
     app.kubernetes.io/instance: talos-cloud-controller-manager
-    app.kubernetes.io/version: "v1.8.1"
+    app.kubernetes.io/version: "v1.10.1"
     app.kubernetes.io/managed-by: Helm
   namespace: kube-system
 ---
@@ -18,10 +18,10 @@ kind: ServiceAccount
 metadata:
   name: talos-cloud-controller-manager-talos-secrets
   labels:
-    helm.sh/chart: talos-cloud-controller-manager-0.4.3
+    helm.sh/chart: talos-cloud-controller-manager-0.4.7
     app.kubernetes.io/name: talos-cloud-controller-manager
     app.kubernetes.io/instance: talos-cloud-controller-manager
-    app.kubernetes.io/version: "v1.8.1"
+    app.kubernetes.io/version: "v1.10.1"
     app.kubernetes.io/managed-by: Helm
   namespace: kube-system
 spec:
@@ -34,10 +34,10 @@ kind: ConfigMap
 metadata:
   name: talos-cloud-controller-manager
   labels:
-    helm.sh/chart: talos-cloud-controller-manager-0.4.3
+    helm.sh/chart: talos-cloud-controller-manager-0.4.7
     app.kubernetes.io/name: talos-cloud-controller-manager
     app.kubernetes.io/instance: talos-cloud-controller-manager
-    app.kubernetes.io/version: "v1.8.1"
+    app.kubernetes.io/version: "v1.10.1"
     app.kubernetes.io/managed-by: Helm
   namespace: kube-system
 data:
@@ -45,25 +45,17 @@ data:
     global:
       PreferIPv6: false
     transformations:
-      - name: worker-nodes
-        nodeSelector:
-          - matchExpressions:
-              - key: talos.dev/dedicated
-                operator: In
-                values:
-                  - worker
-        labels:
-          node-role.kubernetes.io/worker: ""
-      - name: infra-nodes
-        nodeSelector:
-          - matchExpressions:
-              - key: talos.dev/dedicated
-                operator: In
-                values:
-                  - infra
-        labels:
-          node-role.kubernetes.io/worker: ""
-          node-role.kubernetes.io/infra: ""
+    - name: infra-nodes
+      # Match nodes by nodeSelector
+      nodeSelector:
+        - matchExpressions:
+            - key: talos.dev/dedicated
+              operator: In
+              values:
+                - infra
+    # Set labels for matched nodes
+    labels:
+      node-role.kubernetes.io/worker: ""
 ---
 # Source: talos-cloud-controller-manager/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -71,10 +63,10 @@ kind: ClusterRole
 metadata:
   name: system:talos-cloud-controller-manager
   labels:
-    helm.sh/chart: talos-cloud-controller-manager-0.4.3
+    helm.sh/chart: talos-cloud-controller-manager-0.4.7
     app.kubernetes.io/name: talos-cloud-controller-manager
     app.kubernetes.io/instance: talos-cloud-controller-manager
-    app.kubernetes.io/version: "v1.8.1"
+    app.kubernetes.io/version: "v1.10.1"
     app.kubernetes.io/managed-by: Helm
 rules:
 - apiGroups:
@@ -179,10 +171,10 @@ kind: Service
 metadata:
   name: talos-cloud-controller-manager
   labels:
-    helm.sh/chart: talos-cloud-controller-manager-0.4.3
+    helm.sh/chart: talos-cloud-controller-manager-0.4.7
     app.kubernetes.io/name: talos-cloud-controller-manager
     app.kubernetes.io/instance: talos-cloud-controller-manager
-    app.kubernetes.io/version: "v1.8.1"
+    app.kubernetes.io/version: "v1.10.1"
     app.kubernetes.io/managed-by: Helm
   namespace: kube-system
 spec:
@@ -203,10 +195,10 @@ kind: Deployment
 metadata:
   name: talos-cloud-controller-manager
   labels:
-    helm.sh/chart: talos-cloud-controller-manager-0.4.3
+    helm.sh/chart: talos-cloud-controller-manager-0.4.7
     app.kubernetes.io/name: talos-cloud-controller-manager
     app.kubernetes.io/instance: talos-cloud-controller-manager
-    app.kubernetes.io/version: "v1.8.1"
+    app.kubernetes.io/version: "v1.10.1"
     app.kubernetes.io/managed-by: Helm
   namespace: kube-system
 spec:
@@ -240,14 +232,14 @@ spec:
               - ALL
             seccompProfile:
               type: RuntimeDefault
-          image: "ghcr.io/siderolabs/talos-cloud-controller-manager:v1.8.1"
+          image: "ghcr.io/siderolabs/talos-cloud-controller-manager:v1.10.1"
           imagePullPolicy: IfNotPresent
           command: ["/talos-cloud-controller-manager"]
           args:
-            - --v=5
+            - --v=2
             - --cloud-provider=talos
             - --cloud-config=/etc/talos/ccm-config.yaml
-            - --controllers=*
+            - --controllers=cloud-node,node-csr-approval
             - --leader-elect-resource-name=cloud-controller-manager-talos
             - --use-service-account-credentials
             - --secure-port=50258
