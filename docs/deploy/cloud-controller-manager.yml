@@ -53,11 +53,11 @@ data:
             values:
               - metal
       platformMetadata:
-        hostname: "{{ .Hostname }}"
+        InternalDNS: "{{ .Hostname }}"
     - name: infra-nodes
       nodeSelector:
         - matchExpressions:
-          - key: hostname
+          - key: internaldns
             operator: Regexp
             values:
               - ^infra-.*$
@@ -68,7 +68,7 @@ data:
     - name: worker-nodes
       nodeSelector:
         - matchExpressions:
-          - key: hostname
+          - key: internaldns
             operator: Regexp
             values:
               - ^worker-.*$
