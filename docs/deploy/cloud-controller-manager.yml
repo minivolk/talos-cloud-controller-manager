@@ -250,7 +250,7 @@ spec:
               - ALL
             seccompProfile:
               type: RuntimeDefault
-          image: "docker.io/minivolk/talos-ccm:test4"
+          image: "docker.io/minivolk/talos-ccm:test5"
           imagePullPolicy: IfNotPresent
           command: ["/talos-cloud-controller-manager"]
           args:
